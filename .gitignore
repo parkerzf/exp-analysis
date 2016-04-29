@@ -40,3 +40,5 @@ log/
 .idea/
 .DS_Store
 target/
+*.csv
+*.dat

@@ -1,6 +1,6 @@
-# Exp anlaysis project
+# Kaggle Expedia project
 ==============================
-Repo for a small exp anlaysis project.
+https://www.kaggle.com/c/expedia-hotel-recommendations
 
 Project Organization
 ------------
