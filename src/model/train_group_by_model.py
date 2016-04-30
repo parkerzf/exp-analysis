@@ -11,9 +11,9 @@ from utils import *
 
 
 train = pd.read_csv(utils.raw_data_path + 'train.csv',
-                 	dtype={is_booking':bool,'srch_destination_id':np.int32, 'hotel_market':np.int32, \
-                 	'orig_destination_distance':np.double, 'user_id':np.int32, 'hotel_cluster':np.int32}',
-                    usecols=['data_time' , 'is_booking', 'srch_destination_id', 'hotel_market', \
+                 	dtype={'date_time':str, 'is_booking':bool,'srch_destination_id':np.int32, 'hotel_market':np.int32, \
+                 	'orig_destination_distance':np.double, 'user_id':np.int32, 'hotel_cluster':np.int32},
+                    usecols=['date_time', 'is_booking', 'srch_destination_id', 'hotel_market', \
                     'orig_destination_distance', 'user_id', 'hotel_cluster'])
 
 
@@ -29,7 +29,7 @@ def gen_top_k_group_by_model(group_by_field, click_weight = utils.click_weight, 
 	source = train
 	if year == '2013':
 		source = train_2013
-	elseif year == '2014':
+	elif year == '2014':
 		source = train_2014
 	
 	agg = source.groupby([group_by_field, 'hotel_cluster'])['is_booking'].agg(['sum','count'])
