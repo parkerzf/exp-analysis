@@ -22,7 +22,7 @@ table       = 'overall'
 class_col   = 'hotel_cluster'
 # column with set(train/test) info
 set_col     = 'set'
-# column with transaction time (used in time analysis)
+# column with booking time (used in time analysis)
 time_col    = 'date_time'
 # ignore this columns
 ignore_cols = 'id, user_location_city, user_id, psp_reference, first_payment_psp_reference, creation_date, is_booking'
@@ -91,7 +91,7 @@ def get_info_columns():
       d.update({c: {'min': r[i*3], 'max': r[i*3+1], 'avg': r[i*3+2]}})
 
    cur.execute('SELECT {0}, count(*), sum({1}) FROM public.{2} WHERE {0} is not null AND is_booking = 1 GROUP BY 1'.format(set_col, class_col, table))
-   # the fillna() is used because the test_set have NA fraud
+   # the fillna() is used because the test_set have NA label
    df = pd.DataFrame(cur.fetchall()).fillna(0)
 
    # put another stats into dict

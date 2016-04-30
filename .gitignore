@@ -42,3 +42,5 @@ log/
 target/
 *.csv
 *.dat
+*.pkl
+*.npy

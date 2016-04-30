@@ -1,6 +1,6 @@
 CREATE TABLE public.train
 (
-	date_time character(21),
+	date_time character(19),
 	site_name character varying(8),
 	posa_continent character varying(8),
 	user_location_country character varying(8),
@@ -40,7 +40,7 @@ ALTER table public.train Add column set character varying(10) NOT NULL DEFAULT '
 CREATE TABLE public.test
 (
 	id character varying(32),
-	date_time character(21),
+	date_time character(19),
 	site_name character varying(8),
 	posa_continent character varying(8),
 	user_location_country character varying(8),
@@ -93,6 +93,9 @@ FROM public.test);
 
 # Add index on is_booking field
 CREATE INDEX index_booking ON public.overall (is_booking);
+
+# Dump data to csv
+psql booking -U feng.zhao -h"r5-lx-l2" -p"5432" -c"\copy (select extract(epoch from (to_timestamp(date_time, 'YYYY-MM-DD HH24:MI:SS')::timestamp without time zone) at time zone 'utc') * 1000 as data_time_ts, * from public.overall order by date_time) TO 'overall.csv' delimiter '|' csv header;" 
 
 
 
