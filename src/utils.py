@@ -18,15 +18,16 @@ try:
     params = joblib.load(model_path + 'params.pkl')
     k = params['k']
     click_weight = params['click_weight']
+    train_year = params['train_year']
 except:
     pass
 
 def print_help():
-    print "usage: python utils -set_params [k], [click_weight] [train_year=2013|2014|all]"
-    print "for example: python utils -set_params 5 0.05 all"
+    print "  Usage: python utils.py -set_params [k] [click_weight] [train_year=2013|2014|all]"
+    print "Example: python utils.py -set_params 5 0.05 all"
 
 def main():
-    if sys.argv[1] == '-set_params' and len(sys.argv) == 5:
+    if len(sys.argv) == 5 and sys.argv[1] == '-set_params':
         try:
             k = int(sys.argv[2])
             click_weight =  float(sys.argv[3])
