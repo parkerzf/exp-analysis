@@ -1,19 +1,23 @@
 import numpy as np
 import pandas as pd
-from sklearn.externals import joblib
-
 import sys
 import os
+from sklearn.externals import joblib
+
 scriptpath = os.path.dirname(os.path.realpath(sys.argv[0])) + '/../'
 sys.path.append(os.path.abspath(scriptpath))
 import utils
-from utils import *
 
-test = pd.read_csv(utils.raw_data_path + 'test.csv',
+try:
+    test = joblib.load(utils.processed_data_path + 'test_group_by.pkl')
+except:
+	print 'load raw test data'
+	test = pd.read_csv(utils.raw_data_path + 'test.csv',
                  	dtype={'srch_destination_id':np.int32, 'hotel_market':np.int32, \
                  	'orig_destination_distance':np.double, 'user_id':np.int32},
                     usecols=['srch_destination_id', 'hotel_market', \
                     'orig_destination_distance', 'user_id'])
+	joblib.dump(test, utils.processed_data_path + 'test_group_by.pkl')
 
 def predict_group_by_model(group_by_field):
 	"""

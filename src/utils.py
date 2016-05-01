@@ -3,6 +3,7 @@ from sklearn.externals import joblib
 
 # where we can find training, test, and sampleSubmission.csv
 raw_data_path = '/Users/zhaofeng/Project/expedia/data/raw/'
+processed_data_path = '/Users/zhaofeng/Project/expedia/data/processed/'
 # where we store model and results
 model_path = '/Users/zhaofeng/Project/expedia/models/'
 

@@ -7,21 +7,27 @@ from sklearn.externals import joblib
 scriptpath = os.path.dirname(os.path.realpath(sys.argv[0])) + '/../'
 sys.path.append(os.path.abspath(scriptpath))
 import utils
-from utils import *
 
 
-train = pd.read_csv(utils.raw_data_path + 'train.csv',
+try:
+    train = joblib.load(utils.processed_data_path + 'train_group_by.pkl')
+except:
+	print 'load raw train data'
+	train = pd.read_csv(utils.raw_data_path + 'train.csv',
                  	dtype={'date_time':str, 'is_booking':bool,'srch_destination_id':np.int32, 'hotel_market':np.int32, \
                  	'orig_destination_distance':np.double, 'user_id':np.int32, 'hotel_cluster':np.int32},
                     usecols=['date_time', 'is_booking', 'srch_destination_id', 'hotel_market', \
                     'orig_destination_distance', 'user_id', 'hotel_cluster'])
+	joblib.dump(train, utils.processed_data_path + 'train_group_by.pkl')
 
 
 train_2013 = train[train.date_time < '2014-01-01 00:00:00']
 train_2014 = train[train.date_time >= '2014-01-01 00:00:00']
 
+
+
 def top_k_relevence(group, k = utils.k):
-	"""
+    """
 	Order and get the topk hotel cluters by the relevance score in desc order
 	:param group: the aggregate group with hotel cluster relevance scores
 	:param k: the top k value
@@ -39,6 +45,14 @@ def gen_top_k_group_by_model(group_by_field, click_weight = utils.click_weight, 
 	:param year: Year filter on training data
 	:return: the topk group by model with respect to group_by_field
 	"""
+	dump_path = utils.model_path + \
+		'_'.join(['top', str(utils.k), 'cw', str(utils.click_weight), 'group', group_by_field, 'year', year]) + '.pkl'
+
+
+	if os.path.exists(dump_path):
+		print 'file: ' + dump_path + ' exists!'
+		return
+
 	source = train
 	if year == '2013':
 		source = train_2013
@@ -53,8 +67,7 @@ def gen_top_k_group_by_model(group_by_field, click_weight = utils.click_weight, 
 	top_clusters = agg.groupby([group_by_field]).apply(top_k_relevence)
 	top_clusters = pd.DataFrame(top_clusters).rename(columns={0:'hotel_cluster'})
 
-	joblib.dump(top_clusters, utils.model_path + 
-		'_'.join(['top', str(utils.k), 'cw', str(utils.click_weight), 'group', group_by_field, 'year', year]) + '.pkl')
+	joblib.dump(top_clusters, dump_path)
 
 print 'building srch_destination_id model...'
 gen_top_k_group_by_model('srch_destination_id')
