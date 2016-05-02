@@ -10,7 +10,7 @@ sys.path.append(os.path.abspath(scriptpath))
 import utils
 
 parameter_str = '_'.join(['top', str(utils.k), 'cw', str(utils.click_weight), 'year', utils.train_year])
-cforest = joblib.load(utils.model_path + 'rf_all_without_time_' + parameter_str +'.pkl')
+cforest = joblib.load(utils.model_path + 'rf_all_' + parameter_str +'.pkl')
 
 test = joblib.load(utils.processed_data_path + 'test_all_' + parameter_str +'.pkl')
 X_test = test.ix[:500000,1:]
