@@ -12,14 +12,14 @@ import utils
 train = joblib.load(utils.processed_data_path + 'train_is_booking_all_top_5_cw_0.05_year_all.pkl')
 
 X_train = train.ix[:,2:]
-y_train = pd.DataFrame(train['hotel_cluster'].astype(int))
+y_train = train['hotel_cluster'].astype(int)
 
 
 print "train RandomForest Classifier..."
 cforest = RandomForestClassifier(n_estimators=100, max_depth=50, min_samples_split=50, min_samples_leaf=5, 
 	random_state=0, verbose=1, n_jobs=-1)
 
-cforest.fit(X_train, y_train.ravel())
+cforest.fit(X_train, y_train
 joblib.dump(cforest, utils.model_path + 'rf_all_without_time_top_5_cw_0.05_year_all.pkl')
 
 
