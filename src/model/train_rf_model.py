@@ -16,7 +16,7 @@ y_train = train['hotel_cluster'].astype(int)
 
 
 print "train RandomForest Classifier..."
-cforest = RandomForestClassifier(n_estimators=50, max_depth=50, min_samples_split=50, min_samples_leaf=5, 
+cforest = RandomForestClassifier(n_estimators=32, max_depth=50, min_samples_split=50, min_samples_leaf=5, 
 	random_state=0, verbose=1, n_jobs=-1)
 
 cforest.fit(X_train, y_train)
