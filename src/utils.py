@@ -4,11 +4,12 @@ import sys
 import os
 from sklearn.externals import joblib
 
+repo_path = '/Users/zhaofeng/Project/expedia/'
 # where we can find training, test, and sampleSubmission.csv
-raw_data_path = '/Users/zhaofeng/Project/expedia/data/raw/'
-processed_data_path = '/Users/zhaofeng/Project/expedia/data/processed/'
+raw_data_path = repo_path + 'data/raw/'
+processed_data_path = repo_path + 'data/processed/'
 # where we store model and results
-model_path = '/Users/zhaofeng/Project/expedia/models/'
+model_path = repo_path + 'models/'
 
 
 #############################################################

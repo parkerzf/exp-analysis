@@ -132,7 +132,9 @@ def fill_na_features(dataset):
 
 # print 'concat all train baseline features...'
 # train_is_booking_features = pd.concat([train_is_booking[['hotel_cluster', 'date_time', 'orig_destination_distance', \
-# 	'is_mobile', 'is_package', 'srch_adults_cnt', 'srch_children_cnt', 'srch_rm_cnt']], \
+# 	'is_mobile', 'is_package', 'srch_adults_cnt', 'srch_children_cnt', 'srch_rm_cnt', \
+# 	'date_time_dow', 'date_time_hour', 'date_time_month', 'srch_ci_dow', 'srch_ci_month', \
+# 	'srch_co_dow', 'srch_co_month', 'booking_window', 'length_of_stay']], \
 # 	site_name_encoding, posa_continent_encoding, user_location_country_encoding, user_location_region_encoding, \
 # 	channel_encoding, srch_destination_type_id_encoding, hotel_continent_encoding, hotel_country_encoding], axis=1)
 
@@ -172,7 +174,9 @@ fill_na_features(test)
 
 print 'concat all test baseline features...'
 test_features = pd.concat([test[['date_time', 'orig_destination_distance', \
-	'is_mobile', 'is_package', 'srch_adults_cnt', 'srch_children_cnt', 'srch_rm_cnt']], \
+	'is_mobile', 'is_package', 'srch_adults_cnt', 'srch_children_cnt', 'srch_rm_cnt', \
+	'date_time_dow', 'date_time_hour', 'date_time_month', 'srch_ci_dow', 'srch_ci_month', \
+	'srch_co_dow', 'srch_co_month', 'booking_window', 'length_of_stay']], \
 	site_name_encoding, posa_continent_encoding, user_location_country_encoding, user_location_region_encoding, \
 	channel_encoding, srch_destination_type_id_encoding, hotel_continent_encoding, hotel_country_encoding], axis=1)
 
