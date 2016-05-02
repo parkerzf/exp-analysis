@@ -90,7 +90,7 @@ def gen_all_top_one_hot_encoding_columns(dataset):
 	channel_encoding, srch_destination_type_id_encoding, hotel_continent_encoding, hotel_country_encoding
 
 def fill_na_features(dataset):
-	dataset.orig_destination_distance.fillna(-1, inplace=True)
+	dataset.fillna(-1, inplace=True)
 
 
 #############################################################
