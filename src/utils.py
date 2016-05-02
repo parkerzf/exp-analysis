@@ -4,6 +4,7 @@ import sys
 import os
 from sklearn.externals import joblib
 
+# customize the repo path accordingly
 repo_path = '/Users/zhaofeng/Project/expedia/'
 # where we can find training, test, and sampleSubmission.csv
 raw_data_path = repo_path + 'data/raw/'

@@ -39,7 +39,6 @@ def gen_top_k_group_by_model(group_by_field, click_weight = utils.click_weight, 
 	dump_path = utils.model_path + \
 		'_'.join(['top', str(utils.k), 'cw', str(utils.click_weight), 'group', group_by_field, 'year', year]) + '.pkl'
 
-
 	if os.path.exists(dump_path):
 		print 'file: ' + dump_path + ' exists!'
 		return
@@ -61,28 +60,10 @@ def gen_top_k_group_by_model(group_by_field, click_weight = utils.click_weight, 
 	joblib.dump(top_clusters, dump_path)
 
 print 'building srch_destination_id model...'
-gen_top_k_group_by_model('srch_destination_id')
+gen_top_k_group_by_model('srch_destination_id', year = utils.train_year)
 print 'building hotel_market model...'
-gen_top_k_group_by_model('hotel_market')
+gen_top_k_group_by_model('hotel_market', year = utils.train_year)
 print 'building orig_destination_distance model...'
-gen_top_k_group_by_model('orig_destination_distance')
+gen_top_k_group_by_model('orig_destination_distance', year = utils.train_year)
 print 'building user_id model...'
-gen_top_k_group_by_model('user_id')
-
-# print 'building srch_destination_id 2013 model...'
-# gen_top_k_group_by_model('srch_destination_id', year = '2013')
-# print 'building hotel_market 2013 model...'
-# gen_top_k_group_by_model('hotel_market', year = '2013')
-# print 'building orig_destination_distance 2013 model...'
-# gen_top_k_group_by_model('orig_destination_distance', year = '2013')
-# print 'building user_id 2013 model...'
-# gen_top_k_group_by_model('user_id', year = '2013')
-
-# print 'building srch_destination_id 2014 model...'
-# gen_top_k_group_by_model('srch_destination_id', year = '2014')
-# print 'building hotel_market 2014 model...'
-# gen_top_k_group_by_model('hotel_market', year = '2014')
-# print 'building orig_destination_distance 2014 model...'
-# gen_top_k_group_by_model('orig_destination_distance', year = '2014')
-# print 'building user_id 2014 model...'
-# gen_top_k_group_by_model('user_id', year = '2014')
+gen_top_k_group_by_model('user_id', year = utils.train_year)

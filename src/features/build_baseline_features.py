@@ -9,14 +9,17 @@ sys.path.append(os.path.abspath(scriptpath))
 import utils
 
 
-# time based features
 def time_features_enricher(dataset):
+	"""
+    Feature engineering on time related fields
+    :param dataset: train/test dataset
+	"""
 	dataset['date_time_dt'] = pd.to_datetime(dataset.date_time, format = '%Y-%m-%d %H:%M:%S')
 	dataset['date_time_dow'] = dataset.date_time_dt.dt.dayofweek
 	dataset['date_time_hour'] = dataset.date_time_dt.dt.hour
 	dataset['date_time_month'] = dataset.date_time_dt.dt.month
 
-	dataset.loc[dataset.srch_ci == '2161-10-00', 'srch_ci'] = '2016-01-20'
+	dataset.loc[dataset.srch_ci == '2161-10-00', 'srch_ci'] = '2016-01-20' #handle one error format case in test set
 
 	dataset['srch_ci_dt'] = pd.to_datetime(dataset.srch_ci, format = '%Y-%m-%d')
 	dataset['srch_ci_dow'] = dataset.srch_ci_dt.dt.dayofweek
@@ -35,10 +38,10 @@ def time_features_enricher(dataset):
 
 def gen_top_one_hot_encoding(row, field_name, top_vals):
 	"""
-    The helper function for gen_all_top_one_hot_encoding for one row
+    The helper function for gen_top_one_hot_encoding_column for one row
     :param row: the result instance to be filled
-    :param field_name: another group by model result to merge to the row if the row has less than 5 hotel clusters
-    :return: the updated hotel clusters for this instance
+    :param field_name: the categorical field name
+    :return: the one hot encoding features
     """
 	encoding = np.empty(len(top_vals))
 	encoding.fill(0)
@@ -49,10 +52,11 @@ def gen_top_one_hot_encoding(row, field_name, top_vals):
 
 def gen_top_one_hot_encoding_column(dataset, field_name, top_vals):
 	"""
-    Generate top 10 categorical one hot encoding for one field, based on the analysis shown in the reports/figures/report.html
-    :param dataset: the result instance to be filled
-    :param field_name: another group by model result to merge to the row if the row has less than 5 hotel clusters
-    :return: the updated hotel clusters for this instance
+    Generate top 10 categorical one hot encoding for one field
+    :param dataset: train/test dataset
+    :param field_name: the categorical field name
+    :param top_vals: the top vals selected for one hot encoding
+    :return: the one hot encoding features for the field
     """
 	encoding = dataset.apply(lambda row: gen_top_one_hot_encoding(row, field_name, np.array(top_vals)), axis=1)
 	top_vals_str = map(str, top_vals)
@@ -62,6 +66,11 @@ def gen_top_one_hot_encoding_column(dataset, field_name, top_vals):
 	return encoding
 
 def gen_all_top_one_hot_encoding_columns(dataset):
+	"""
+    Generate top 10 categorical one hot encoding columns, based on the analysis shown in the reports/figures/report.html
+    :param dataset: train/test dataset
+    :return: the one hot encoding features for all the categorical fields
+    """
 	site_name_top_vals = [2, 11, 37, 24, 34, 8, 13, 23, 17, 28]
 	site_name_encoding = gen_top_one_hot_encoding_column(dataset, 'site_name', site_name_top_vals)
 
@@ -90,28 +99,17 @@ def gen_all_top_one_hot_encoding_columns(dataset):
 	channel_encoding, srch_destination_type_id_encoding, hotel_continent_encoding, hotel_country_encoding
 
 def fill_na_features(dataset):
+	"""
+    Fill the remaining missing values
+    :param dataset: train/test dataset
+	"""
 	dataset.fillna(-1, inplace=True)
 
 
 #############################################################
 ####################   train dataset     ####################
 #############################################################
-
 train = utils.load_train('baseline')
-
-# train = pd.read_csv(utils.raw_data_path + 'train_1000.csv',
-#                         dtype={'date_time':str, 'is_booking':np.int8, 'site_name':np.int32,'posa_continent':np.int32, 'user_location_country':np.int32, \
-#                         'user_location_region':np.int32, 'orig_destination_distance':np.double, \
-#                         'is_mobile':np.int8, 'is_package':np.int8, 'channel':np.int32, 'srch_ci':str, 'srch_co':str, \
-#                         'srch_adults_cnt':np.int32, 'srch_children_cnt':np.int32, 'srch_rm_cnt':np.int32, \
-#                         'srch_destination_type_id':np.int32, 'hotel_continent':np.int32, 'hotel_country':np.int32, \
-#                         'hotel_cluster':np.int32},
-#                         usecols=['date_time', 'is_booking', 'site_name', 'posa_continent', 'user_location_country', \
-#                         'user_location_region', 'orig_destination_distance', \
-#                         'is_mobile', 'is_package', 'channel', 'srch_ci', 'srch_co', \
-#                         'srch_adults_cnt', 'srch_children_cnt', 'srch_rm_cnt', \
-#                         'srch_destination_type_id', 'hotel_continent', 'hotel_country', \
-#                         'hotel_cluster'])
 
 train_is_booking = train[train.is_booking == 1]
 train_is_booking.reset_index(inplace = True)
@@ -149,17 +147,6 @@ del train_is_booking
 
 test  = utils.load_test('baseline')
 
-# test = pd.read_csv(utils.raw_data_path + 'test_1000.csv',
-#                 dtype={'date_time':str, 'site_name':np.int32,'posa_continent':np.int32, 'user_location_country':np.int32, \
-#                 'user_location_region':np.int32, 'orig_destination_distance':np.double, \
-#                 'is_mobile':np.int8, 'is_package':np.int8, 'channel':np.int32, 'srch_ci':str, 'srch_co':str, \
-#                 'srch_adults_cnt':np.int32, 'srch_children_cnt':np.int32, 'srch_rm_cnt':np.int32, \
-#                 'srch_destination_type_id':np.int32, 'hotel_continent':np.int32, 'hotel_country':np.int32},
-#                 usecols=['date_time', 'site_name', 'posa_continent', 'user_location_country', \
-#                 'user_location_region', 'orig_destination_distance', \
-#                 'is_mobile', 'is_package', 'channel', 'srch_ci', 'srch_co', \
-#                 'srch_adults_cnt', 'srch_children_cnt', 'srch_rm_cnt', \
-#                 'srch_destination_type_id', 'hotel_continent', 'hotel_country'])
 print 'generate test time features...'
 time_features_enricher(test)
 
