@@ -16,9 +16,9 @@ y_train = pd.DataFrame(train['hotel_cluster'].astype(int))
 
 
 print "train XGBClassifier..."
-cxgb = xgb.XGBClassifier(max_depth=15, n_estimators=100, learning_rate=0.02, colsample_bytree=0.5, min_child_weight=5, verbose=1)
+cxgb = xgb.XGBClassifier(max_depth=15, n_estimators=100, learning_rate=0.02, colsample_bytree=0.5, min_child_weight=5)
 
-cxgb.fit(X_train, y_train.ravel())
+cxgb.fit(X_train, y_train.ravel(), verbose=True)
 joblib.dump(cxgb, utils.model_path + 'cxgb_all_without_time_top_5_cw_0.05_year_all.pkl')
 
 
