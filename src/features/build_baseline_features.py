@@ -97,52 +97,51 @@ def fill_na_features(dataset):
 ####################   train dataset     ####################
 #############################################################
 
-# train = utils.load_train('baseline')
+train = utils.load_train('baseline')
 
-# # train = pd.read_csv(utils.raw_data_path + 'train_1000.csv',
-# #                         dtype={'date_time':str, 'is_booking':np.int8, 'site_name':np.int32,'posa_continent':np.int32, 'user_location_country':np.int32, \
-# #                         'user_location_region':np.int32, 'orig_destination_distance':np.double, \
-# #                         'is_mobile':np.int8, 'is_package':np.int8, 'channel':np.int32, 'srch_ci':str, 'srch_co':str, \
-# #                         'srch_adults_cnt':np.int32, 'srch_children_cnt':np.int32, 'srch_rm_cnt':np.int32, \
-# #                         'srch_destination_type_id':np.int32, 'hotel_continent':np.int32, 'hotel_country':np.int32, \
-# #                         'hotel_cluster':np.int32},
-# #                         usecols=['date_time', 'is_booking', 'site_name', 'posa_continent', 'user_location_country', \
-# #                         'user_location_region', 'orig_destination_distance', \
-# #                         'is_mobile', 'is_package', 'channel', 'srch_ci', 'srch_co', \
-# #                         'srch_adults_cnt', 'srch_children_cnt', 'srch_rm_cnt', \
-# #                         'srch_destination_type_id', 'hotel_continent', 'hotel_country', \
-# #                         'hotel_cluster'])
+# train = pd.read_csv(utils.raw_data_path + 'train_1000.csv',
+#                         dtype={'date_time':str, 'is_booking':np.int8, 'site_name':np.int32,'posa_continent':np.int32, 'user_location_country':np.int32, \
+#                         'user_location_region':np.int32, 'orig_destination_distance':np.double, \
+#                         'is_mobile':np.int8, 'is_package':np.int8, 'channel':np.int32, 'srch_ci':str, 'srch_co':str, \
+#                         'srch_adults_cnt':np.int32, 'srch_children_cnt':np.int32, 'srch_rm_cnt':np.int32, \
+#                         'srch_destination_type_id':np.int32, 'hotel_continent':np.int32, 'hotel_country':np.int32, \
+#                         'hotel_cluster':np.int32},
+#                         usecols=['date_time', 'is_booking', 'site_name', 'posa_continent', 'user_location_country', \
+#                         'user_location_region', 'orig_destination_distance', \
+#                         'is_mobile', 'is_package', 'channel', 'srch_ci', 'srch_co', \
+#                         'srch_adults_cnt', 'srch_children_cnt', 'srch_rm_cnt', \
+#                         'srch_destination_type_id', 'hotel_continent', 'hotel_country', \
+#                         'hotel_cluster'])
 
+train_is_booking = train[train.is_booking == 1]
+train_is_booking.reset_index(inplace = True)
+train_is_booking.is_copy = False
+del train
 
-# train_is_booking = train[train.is_booking == 1]
-# train_is_booking.reset_index(inplace = True)
-# train_is_booking.is_copy = False
-# del train
+print 'generate train time features...'
+time_features_enricher(train_is_booking)
 
-# print 'generate train time features...'
-# time_features_enricher(train_is_booking)
+print 'generate train one hot encoding features...'
+site_name_encoding, posa_continent_encoding, user_location_country_encoding, user_location_region_encoding, \
+	channel_encoding, srch_destination_type_id_encoding, hotel_continent_encoding, hotel_country_encoding = \
+	gen_all_top_one_hot_encoding_columns(train_is_booking)
 
-# print 'generate train one hot encoding features...'
-# site_name_encoding, posa_continent_encoding, user_location_country_encoding, user_location_region_encoding, \
-# 	channel_encoding, srch_destination_type_id_encoding, hotel_continent_encoding, hotel_country_encoding = \
-# 	gen_all_top_one_hot_encoding_columns(train_is_booking)
+print 'fill train na features...'
+fill_na_features(train_is_booking)
 
-# print 'fill train na features...'
-# fill_na_features(train_is_booking)
+print 'concat all train baseline features...'
+train_is_booking_features = pd.concat([train_is_booking[['hotel_cluster', 'date_time', 'orig_destination_distance', \
+	'is_mobile', 'is_package', 'srch_adults_cnt', 'srch_children_cnt', 'srch_rm_cnt', \
+	'date_time_dow', 'date_time_hour', 'date_time_month', 'srch_ci_dow', 'srch_ci_month', \
+	'srch_co_dow', 'srch_co_month', 'booking_window', 'length_of_stay']], \
+	site_name_encoding, posa_continent_encoding, user_location_country_encoding, user_location_region_encoding, \
+	channel_encoding, srch_destination_type_id_encoding, hotel_continent_encoding, hotel_country_encoding], axis=1)
 
-# print 'concat all train baseline features...'
-# train_is_booking_features = pd.concat([train_is_booking[['hotel_cluster', 'date_time', 'orig_destination_distance', \
-# 	'is_mobile', 'is_package', 'srch_adults_cnt', 'srch_children_cnt', 'srch_rm_cnt', \
-# 	'date_time_dow', 'date_time_hour', 'date_time_month', 'srch_ci_dow', 'srch_ci_month', \
-# 	'srch_co_dow', 'srch_co_month', 'booking_window', 'length_of_stay']], \
-# 	site_name_encoding, posa_continent_encoding, user_location_country_encoding, user_location_region_encoding, \
-# 	channel_encoding, srch_destination_type_id_encoding, hotel_continent_encoding, hotel_country_encoding], axis=1)
+train_is_booking_features.to_csv(utils.processed_data_path +
+	'_'.join(['train_is_booking_baseline', 'year', utils.train_year]) + '.csv', 
+	header=True, index=False)
 
-# train_is_booking_features.to_csv(utils.processed_data_path +
-# 	'_'.join(['train_is_booking_baseline', 'year', utils.train_year]) + '.csv', 
-# 	header=True, index=False)
-
-# del train_is_booking
+del train_is_booking
 
 #############################################################
 ####################   test dataset      ####################
