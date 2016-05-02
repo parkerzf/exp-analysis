@@ -3,7 +3,7 @@ import pandas as pd
 import sys
 import os
 from sklearn.externals import joblib
-from sklearn.ensemble import RandomForestClassifier
+import xgboost as xgb
 
 scriptpath = os.path.dirname(os.path.realpath(sys.argv[0])) + '/../'
 sys.path.append(os.path.abspath(scriptpath))
@@ -15,12 +15,13 @@ X_train = train.ix[:,2:]
 y_train = pd.DataFrame(train['hotel_cluster'].astype(int))
 
 
-print "train RandomForest Classifier..."
-cforest = RandomForestClassifier(n_estimators=100, max_depth=50, min_samples_split=50, min_samples_leaf=5, 
-	random_state=0, verbose=1, n_jobs=-1)
+print "train XGBClassifier..."
+cxgb = xgb.XGBClassifier(max_depth=15, n_estimators=100, learning_rate=0.02, colsample_bytree=0.5, min_child_weight=5, verbose=1)
 
-cforest.fit(X_train, y_train.ravel())
-joblib.dump(cforest, utils.model_path + 'rf_all_without_time_top_5_cw_0.05_year_all.pkl')
+cxgb.fit(X_train, y_train.ravel())
+joblib.dump(cxgb, utils.model_path + 'cxgb_all_without_time_top_5_cw_0.05_year_all.pkl')
+
+
 
 
 

@@ -23,3 +23,4 @@ pred_probas = cforest.predict_proba(X_test)
 
 #TODO compute the top 5 hotel clusters
 
+
