@@ -9,27 +9,22 @@ scriptpath = os.path.dirname(os.path.realpath(sys.argv[0])) + '/../'
 sys.path.append(os.path.abspath(scriptpath))
 import utils
 
-cforest = joblib.load(utils.model_path + 'rf_all_without_time_top_5_cw_0.05_year_all.pkl')
+parameter_str = '_'.join(['top', str(utils.k), 'cw', str(utils.click_weight), 'year', utils.train_year])
+cforest = joblib.load(utils.model_path + 'rf_all_without_time_' + parameter_str +'.pkl')
 
-test = joblib.load(utils.processed_data_path + 'test_all_top_5_cw_0.05_year_all.pkl')
-#X_test = test.ix[:,1:]
-X_test = test.ix[:999,1:]
+test = joblib.load(utils.processed_data_path + 'test_all_' + parameter_str +'.pkl')
+X_test = test.ix[:,1:]
 
 print "predict RandomForest Classifier..."
 
 probs = cforest.predict_proba(X_test)
+sorted_index = np.argsort(-np.array(probs))[:,:5]
 
-print probs.shape
+result = pd.DataFrame(columns = {'hotel_cluster'})
 
-best_5 = np.argsort(probs, axis=0)[-5:]
+result['hotel_cluster'] = np.array([np.array_str(sorted_index[i])[1:-1] for i in range(sorted_index.shape[0])])
 
-print best_5.shape
-
-
-print cforest.predict(X_test)
-
-
-
-#TODO compute the top 5 hotel clusters
+result.hotel_cluster.to_csv(utils.model_path + 
+	'results/submission_rf_all_without_time_' + parameter_str + '.csv', header=True, index_label='id')
 
 
